@@ -25,7 +25,7 @@ SECRET_KEY = '1eww!94@xf)rgk!%j3-ic7ng8jzs0!j!ln0ehm1swg_q&95^3o'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
@@ -83,6 +83,17 @@ DATABASES = {
     }
 }
 
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake',
+        'TIMEOUT': 300,        # 缓存超时时间（默认300，None表示永不过期，0表示立即过期）
+        'OPTIONS': {
+            'MAX_ENTRIES': 300,     # 最大缓存个数（默认300）
+            'CULL_FREQUENCY': 3,    # 缓存到达最大个数之后，剔除缓存个数的比例，即：1/CULL_FREQUENCY（默认3）
+        }
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
@@ -108,10 +119,10 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-# ʱ����������
-TIME_ZONE = 'Asia/Shanghai'			# ���Ϻ�ʱ��
+# 时区（更换）
+TIME_ZONE = 'Asia/Shanghai'			# 改上海时区
 
-# ��ʽ�����ʱ��
+# 格式化输出时间
 USE_L10N = False
 USE_I18N = True
 USE_TZ = True
