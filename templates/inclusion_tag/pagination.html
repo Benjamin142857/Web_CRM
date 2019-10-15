@@ -1,0 +1,37 @@
+<!--
+    ret = {
+        'url': 'http://...',                # 页码对应网页url
+        'page_lst': [3, 4, 5, ...],        # 当前页码栏需展示页码列表
+        'now_page': 6,                      # 当前页码
+        'max_page': 16,                     # 最大页数
+    }
+-->
+
+<nav class="text-center" aria-label="Page navigation">
+    <ul class="pagination">
+
+        <!-- 首页 -->
+        <li {% if now_page == 1 %}class="disabled"{% endif %}>
+            <a href="{{ url }}" aria-label="Previous">
+                <span aria-hidden="true" title="page 1">&laquo;</span>
+            </a>
+        </li>
+
+        <!-- 页码栏 -->
+        {% for page in page_lst %}
+            {% if page == now_page %}
+                <li class="active"><a href="{{ url }}?page={{ page }}">{{ page }}</a></li>
+            {% else %}
+                <li><a href="{{ url }}?page={{ page }}">{{ page }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        <!-- 尾页 -->
+        <li {% if now_page == page_max %}class="disabled"{% endif %}>
+            <a href="{{ url }}?page={{ max_page }}" aria-label="Next">
+                <span aria-hidden="true" title="page {{ max_page }}">&raquo;</span>
+            </a>
+        </li>
+
+    </ul>
+</nav>

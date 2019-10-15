@@ -7,7 +7,7 @@
 """
 
 
-def get_page_range(total_page, now_page, max_page_show):
+def get_pagination(request, one_page_max_show, ):
     if total_page <= max_page_show:
         ret = (range(1, total_page+1), 0)
     else:

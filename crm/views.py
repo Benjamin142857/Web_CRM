@@ -2,17 +2,47 @@ import re
 import math
 
 from django.shortcuts import render
-from utils.other import get_page_range
+
 
 
 def page_list(request):
-    page_str = request.GET.get('page')
-    page_num = int(page_str) if page_str and re.findall(r'^\d+$', page_str) else 1
-    ret_lst = [{'name': 'benjamin_{}'.format(i), 'age': i} for i in range(300)]
-    ret_lst_length = len(ret_lst)
-    one_page_max_show = 20
 
-    page_lst, show_cls = get_page_range(total_page=math.ceil(ret_lst_length/one_page_max_show), now_page=page_num, max_page_show=8)
-    now_page_lst = ret_lst[(page_num-1)*one_page_max_show: page_num*one_page_max_show]
-    print(show_cls)
-    return render(request, 'crm/page_list.html', {'now_page_list': now_page_lst, 'page_list': page_lst})
+    now_page_str = request.GET.get('page')
+    now_page = int(now_page_str) if now_page_str and re.findall(r'^\d+$', now_page_str) else 1
+    one_page_max_show = 20
+    all_data = [{'name': 'benjamin_{}'.format(i), 'age': i} for i in range(300)]
+    max_page = math.ceil(len(all_data)/one_page_max_show)
+    if now_page < 1 or now_page > max_page:
+        ret_data = all_data[0:one_page_max_show]
+        now_page = 1
+    else:
+        ret_data = all_data[(now_page-1)*one_page_max_show: now_page*one_page_max_show]
+
+    pagination = {
+        'url': '/crm/page_list/',
+        'now_page': now_page,
+        'max_page': max_page,
+        'pagination_max_show': 9,
+    }
+    return render(request, 'crm/page_list.html', {'data': ret_data, 'pagination': pagination})
+
+
+def page_list2(request):
+    now_page_str = request.GET.get('page')
+    now_page = int(now_page_str) if now_page_str and re.findall(r'^\d+$', now_page_str) else 1
+    one_page_max_show = 20
+    all_data = [{'name': 'stella_{}'.format(i), 'age': i} for i in range(900)]
+    max_page = math.ceil(len(all_data) / one_page_max_show)
+    if now_page<1 or now_page>max_page:
+        ret_data = all_data[0:one_page_max_show]
+        now_page = 1
+    else:
+        ret_data = all_data[(now_page - 1) * one_page_max_show: now_page * one_page_max_show]
+
+    pagination = {
+        'url': '/crm/page_list2/',
+        'now_page': now_page,
+        'max_page': max_page,
+        'pagination_max_show': 11,
+    }
+    return render(request, 'crm/page_list2.html', {'data': ret_data, 'pagination': pagination})
