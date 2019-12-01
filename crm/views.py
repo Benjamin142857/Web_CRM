@@ -1,11 +1,16 @@
 import re
 import math
 
-from django.shortcuts import render
-
+from django.shortcuts import render, HttpResponse, redirect
+from django.views import View
 
 
 def page_list(request):
+    print('\n\n\n')
+    for k, v in request.META.items():
+        print('"{}": "{}"'.format(k, v))
+    print(request.path)
+    print(request.path_info)
 
     now_page_str = request.GET.get('page')
     now_page = int(now_page_str) if now_page_str and re.findall(r'^\d+$', now_page_str) else 1
@@ -46,3 +51,13 @@ def page_list2(request):
         'pagination_max_show': 11,
     }
     return render(request, 'crm/page_list2.html', {'data': ret_data, 'pagination': pagination})
+
+
+def test(request):
+    qd = request.GET
+    qd._mutable = True
+    qd['next'] = '/crm/test/?a=2&b=3'
+    print(qd)
+    for k, v in qd.items():
+        print(k, type(v))
+    return redirect('/crm/page_list/{}'.format(qd.urlencode()))

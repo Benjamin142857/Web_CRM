@@ -12,6 +12,7 @@ app_name = 'crm'
 
 urlpatterns = [
     # 出版社Press
-    url(r'^page_list/', views.page_list),
-    url(r'^page_list2/', views.page_list2),
+    url(r'^page_list/', views.page_list, name='page_lst'),
+    url(r'^page_list2/', views.page_list2, name='page_lst2'),
+    url(r'^test/', views.test, name='test'),
 ]

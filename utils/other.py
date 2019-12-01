@@ -5,6 +5,7 @@
     Data        : 10/6/2019
     Remark      : other
 """
+import requests
 
 
 def get_pagination(request, one_page_max_show, ):
@@ -21,7 +22,12 @@ def get_pagination(request, one_page_max_show, ):
     return ret
 
 
+
+
 if __name__ == '__main__':
-    a, b = get_page_range(15, 144, 9)
-    print(list(a))
-    print(b)
+    req = requests.get(
+        url='http://127.0.0.1:8000/crm/page_list/?a=3',
+        headers={'User-Agent': "Fuck you"},
+        params= {'a':4, 'c':5}
+        # proxies={'http': 'http://127.0.0.1'}
+    )
