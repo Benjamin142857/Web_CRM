@@ -6,11 +6,11 @@ from django.views import View
 
 
 def page_list(request):
-    print('\n\n\n')
-    for k, v in request.META.items():
-        print('"{}": "{}"'.format(k, v))
-    print(request.path)
-    print(request.path_info)
+    # print('\n\n\n')
+    # for k, v in request.META.items():
+    #     print('"{}": "{}"'.format(k, v))
+    # print(request.path)
+    # print(request.path_info)
 
     now_page_str = request.GET.get('page')
     now_page = int(now_page_str) if now_page_str and re.findall(r'^\d+$', now_page_str) else 1
@@ -29,6 +29,7 @@ def page_list(request):
         'max_page': max_page,
         'pagination_max_show': 9,
     }
+    print('abc')
     return render(request, 'crm/page_list.html', {'data': ret_data, 'pagination': pagination})
 
 
