@@ -1,28 +1,25 @@
 from django.apps import AppConfig
-
+from Web_CRM import settings
 
 class RbacConfig(AppConfig):
     name = 'rbac'
 
 
-# RBAC对应的用户表配置
+# RBAC 对应的用户表配置
 ModelUserConfig = {
-    'UserModel': 'rbac.models.UserProfile',
-    'UserRoleField': 'role',
+    'UserModel': 'rbac.models.UserProfile',         # value填入相应表名-按格式("app.models.TableName")
+    'UserRoleField': 'role',                        # value填入相应字段名
+    'UserIsAdminField': 'IsAdmin',                  # value填入相应字段名
 }
 
+# RBAC-Session KeyName (Session键名，可指向外部 str)
+RbacSessionKeyName ='Rsess'
+
+# RBAC 权限白名单 (写入不需要经过权限校验的url, 可指定外部 URL_List)
+RbacWhiteList = settings.URL_WHITE_LST
 
 # RBAC 组件库配置
 InclusionConfig = {
-    # 基于当前角色的动态三级菜单
-    'ThreeLayerMenu': {
-
-    },
-
-    # 基于动态菜单的面包屑导航
-    'BreadCrumb': {
-
-    },
+    'ThreeLayerMenu': True,     # 基于当前角色的动态三级菜单
+    'BreadCrumb': True,         # 基于动态菜单的面包屑导航
 }
-
-DEBUG = True

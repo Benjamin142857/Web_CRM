@@ -3,6 +3,9 @@ import math
 
 from django.shortcuts import render, HttpResponse, redirect
 from django.views import View
+from rbac.core import init_permission
+from rbac.models import UserProfile
+
 
 
 def page_list(request):
@@ -23,13 +26,17 @@ def page_list(request):
     else:
         ret_data = all_data[(now_page-1)*one_page_max_show: now_page*one_page_max_show]
 
+    request.session['fuck'] = 'fuck'
+    request.session.set_expiry(60 * 60)
+    request.session['you'] = 'you'
+    # request.session.set_expiry(60 * 60 * 6)
     pagination = {
         'url': '/crm/page_list/',
         'now_page': now_page,
         'max_page': max_page,
         'pagination_max_show': 9,
     }
-    print('abc')
+
     return render(request, 'crm/page_list.html', {'data': ret_data, 'pagination': pagination})
 
 
@@ -44,7 +51,8 @@ def page_list2(request):
         now_page = 1
     else:
         ret_data = all_data[(now_page - 1) * one_page_max_show: now_page * one_page_max_show]
-
+    print(request.session['fuck'])
+    print(request.session['you'])
     pagination = {
         'url': '/crm/page_list2/',
         'now_page': now_page,
@@ -62,3 +70,11 @@ def test(request):
     for k, v in qd.items():
         print(k, type(v))
     return redirect('/crm/page_list/{}'.format(qd.urlencode()))
+
+
+def login(request):
+    if request.method == 'GET':
+        user = request.UserObj
+        print(user)
+
+        return HttpResponse('{}\n{}'.format(request.path_info, request.path))

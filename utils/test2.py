@@ -49,7 +49,7 @@ def get_patterns_urls(urlpatterns_lst, ret_lst, app_namespace=None, app_url=None
                 raise NameError('{}(app) > urls.py > [url_lst] must be named to urlpatterns.'.format(url_obj.app_name))
         elif isinstance(url_obj, URLPattern):
             full_url_pattern = app_url._regex + url_obj.pattern._regex.replace('^', '').replace('$',  '') if app_url else url_obj.pattern._regex
-
+            full_url_pattern = '/' + full_url_pattern.replace('^', '')
             if url_obj.name:
                 full_url_name = '{}:{}'.format(app_namespace, url_obj.name) if app_namespace else url_obj.name
             else:

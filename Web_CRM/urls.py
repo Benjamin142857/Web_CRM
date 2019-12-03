@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^crm/', include('crm.urls', namespace='CRM')),
     url(r'^benjamin/', views.page_list, name='benjamin'),
     url(r'^stella/', views.page_list, name='stella'),
+    url(r'^', views.page_list, name='home'),
+    url(r'^login/', views.page_list, name='login'),
 ]

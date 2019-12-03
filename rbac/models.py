@@ -3,10 +3,11 @@ from django.db import models
 
 class UserProfile(models.Model):
     id = models.AutoField(primary_key=True)
-    Username = models.CharField(verbose_name='用户名', max_length=32)
+    Username = models.CharField(verbose_name='用户名', max_length=32, unique=True)
     Password = models.CharField(verbose_name='密码', max_length=16)
     Alias = models.CharField(verbose_name='昵称', max_length=32, null=True, blank=True)
     role = models.ManyToManyField(verbose_name='用户角色', to='Role', related_name='UserProfile')
+    IsAdmin = models.BooleanField(verbose_name='超级管理员', default=False)
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
 
@@ -28,4 +29,6 @@ class Permission(models.Model):
 class MenuRoot(models.Model):
     id = models.AutoField(primary_key=True)
     label = models.CharField(verbose_name='根菜单标签', max_length=64)
+    icon = models.CharField(verbose_name='根菜单图标', max_length=64, null=True, blank=True)
+    weight = models.IntegerField(verbose_name='根菜单排序权重', default=142857)
 
