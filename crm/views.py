@@ -1,9 +1,11 @@
 import re
 import math
 
-from django.shortcuts import render, HttpResponse, redirect
+from django.shortcuts import render, HttpResponse, redirect, reverse
 from django.views import View
+from crm import apps as crm_settings
 from rbac.core import init_permission
+from rbac import apps as rbac_settings
 from rbac.models import UserProfile
 
 
@@ -75,6 +77,22 @@ def test(request):
 def login(request):
     if request.method == 'GET':
         user = request.UserObj
-        print(user)
+        if user:
+            return redirect(reverse('home'))
+        return render(request, 'crm/login.html')
 
-        return HttpResponse('{}\n{}'.format(request.path_info, request.path))
+    elif request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        next = request.GET.get('next', '/')
+        UserObj = UserProfile.objects.filter(Username=username, Password=password).first()
+        if UserObj:
+            request.session[crm_settings.UserSessionKeyName] = UserObj.id
+            init_permission(request, UserObj)
+            return redirect(next)
+        else:
+            return render(request, 'crm/login.html', {'error_info': '用户名或密码错误'})
+
+
+def home(request):
+    return render(request, 'crm/home.html', {'Rsess': request.session[rbac_settings.RbacSessionKeyName]})

@@ -10,11 +10,17 @@ class UserProfile(models.Model):
     IsAdmin = models.BooleanField(verbose_name='超级管理员', default=False)
     create_time = models.DateTimeField(verbose_name='创建时间', auto_now_add=True)
 
+    def __str__(self):
+        return '<{} - {}>'.format(self.id, self.Username)
+
 
 class Role(models.Model):
     id = models.AutoField(primary_key=True)
     label = models.CharField(verbose_name='角色标签', max_length=64, unique=True)
     permissions = models.ManyToManyField(verbose_name='角色权限', to='Permission', related_name='Role')
+
+    def __str__(self):
+        return '<{} - {}>'.format(self.id, self.label)
 
 
 class Permission(models.Model):
@@ -25,6 +31,9 @@ class Permission(models.Model):
     menu_root = models.ForeignKey(verbose_name='所属一级菜单', to='MenuRoot', related_name='Permission', null=True, blank=True, on_delete=models.SET_NULL)
     menu_parent = models.ForeignKey(verbose_name='所属二级菜单', to='self', related_name='Children', null=True, blank=True, on_delete=models.SET_NULL)
 
+    def __str__(self):
+        return '<{} - {}>'.format(self.id, self.label)
+
 
 class MenuRoot(models.Model):
     id = models.AutoField(primary_key=True)
@@ -32,3 +41,5 @@ class MenuRoot(models.Model):
     icon = models.CharField(verbose_name='根菜单图标', max_length=64, null=True, blank=True)
     weight = models.IntegerField(verbose_name='根菜单排序权重', default=142857)
 
+    def __str__(self):
+        return '<{} - {}>'.format(self.id, self.label)

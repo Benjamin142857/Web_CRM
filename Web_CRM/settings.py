@@ -37,7 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'crm',
+    'crm.apps.CrmConfig',
     'rbac.apps.RbacConfig',
 ]
 
@@ -50,10 +50,12 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'crm.middlewares.CrmMiddleware',
-    'rbac.middlewares.RbacMiddleware',
+    # 'rbac.middlewares.RbacMiddleware',
 ]
 
 ROOT_URLCONF = 'Web_CRM.urls'
+
+APPEND_SLASH = True
 
 TEMPLATES = [
     {

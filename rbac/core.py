@@ -28,6 +28,7 @@ class RbacManager(object):
 
 
 def init_permission(request, UserObj):
+    # TODO 校验步骤可提到__init__.py，避免每次init_permission都校验配置造成资源浪费
     # 0. 引入配置并校验, 获取用户角色QuerySet
     try:
         app, models, table = rbac_settings.ModelUserConfig['UserModel'].split('.')
@@ -42,12 +43,11 @@ def init_permission(request, UserObj):
             if not isinstance(FirstRole, (type(None), Role)):
                 raise ValueError("rbac.apps.ModelUserConfig['UserRoleField'] 对应字段没有对应关联到 rbac.models.Role.")
 
-            # 0.3 校验 rbac_settings.ModelUserConfig['UserRoleField'] 配置
+            # 0.3 校验 rbac_settings.ModelUserConfig['UserIsAdminField'] 配置
             if not isinstance(IsAdmin, bool):
                 raise ValueError("rbac.apps.ModelUserConfig['UserIsAdminField'] 对应字段非BooleanField类型，若已对应则可能是用户该字段为空，请补上默认值(True/False).")
         else:
             raise ValueError("rbac.apps.ModelUserConfig['UserModel'] 与 UserObj 传入对象表类型不一致, 注意需传入相应数据对象而非QuerySet.")
-
         # 0.4 校验Session
 
         # 初始化session_dct
@@ -56,24 +56,24 @@ def init_permission(request, UserObj):
         raise ValueError('rbac.apps 配置信息出错')
 
     # 1. 根据Role-QuerySet生成Perimission_dct
-    if IsAdmin:
-        Permission_dct = '__all__'
-    else:
-        Permission_dct = generate_Permissions_dct(UserRolesQS)
+    Permission_dct = generate_Permissions_dct(UserRolesQS, IsAdmin=IsAdmin)
     session_dct['Permissions'] = Permission_dct
 
 
     # 2.1 基于当前角色的动态三级菜单
     ThreeLayerMenu = rbac_settings.InclusionConfig.get('ThreeLayerMenu')
     if ThreeLayerMenu:
-        ThreeLayerMenu_dct = generate_ThreeLayerMenu_dct(UserRolesQS)
+        ThreeLayerMenu_dct = generate_ThreeLayerMenu_dct(UserRolesQS, IsAdmin=IsAdmin)
         session_dct['ThreeLayerMenu'] = ThreeLayerMenu_dct
 
     # 3. 写入Session
     request.session[rbac_settings.RbacSessionKeyName] = session_dct
 
 
-def generate_Permissions_dct(UserRoleQS):
+def generate_Permissions_dct(UserRoleQS, IsAdmin=False):
+    if IsAdmin:
+        UserRoleQS = Role.objects.all()
+
     all_perm_info_dct = UserRoleQS.values(
         'permissions__url_path',
         'permissions__url_name',
@@ -88,6 +88,7 @@ def generate_Permissions_dct(UserRoleQS):
             'url_path': one_perm_info_dct['permissions__url_path'],
             'url_name': one_perm_info_dct['permissions__url_name'],
             'MenuRoot_id': one_perm_info_dct['permissions__menu_root'],
+            'MenuRoot_label': one_perm_info_dct['permissions__menu_root__label'],
             'MenuParent_path': one_perm_info_dct['permissions__menu_parent__url_path'],
             'label': one_perm_info_dct['permissions__label'],
         }
@@ -95,7 +96,10 @@ def generate_Permissions_dct(UserRoleQS):
     return Permissions_dct
 
 
-def generate_ThreeLayerMenu_dct(UserRoleQS):
+def generate_ThreeLayerMenu_dct(UserRoleQS, IsAdmin=False):
+    if IsAdmin:
+        UserRoleQS = Role.objects.all()
+
     ThreeLayerMenu_dct = {}
     perm_qs = Permission.objects.filter(Role__in=UserRoleQS if UserRoleQS.exists() else [])
 

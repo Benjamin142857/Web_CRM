@@ -6,8 +6,8 @@ from crm import views
 urlpatterns = [
     # path('admin/', admin.site.urls),
     url(r'^crm/', include('crm.urls', namespace='CRM')),
-    url(r'^benjamin/', views.page_list, name='benjamin'),
-    url(r'^stella/', views.page_list, name='stella'),
-    url(r'^', views.page_list, name='home'),
-    url(r'^login/', views.page_list, name='login'),
+    url(r'^benjamin/$', views.page_list, name='benjamin'),
+    url(r'^stella/$', views.page_list, name='stella'),
+    url(r'^$', views.home, name='home'),
+    url(r'^login/$', views.login, name='login'),
 ]

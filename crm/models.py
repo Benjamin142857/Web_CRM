@@ -1,6 +1,6 @@
 import random
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, _, send_mail
+# from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin, BaseUserManager, _, send_mail
 
 
 # class UserManager(BaseUserManager):
